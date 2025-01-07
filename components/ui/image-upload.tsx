@@ -26,9 +26,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   }, []);
 
   const onUpload = (result: any) => {
-    if (result?.info?.secure_url) {
-      onChange(result.info.secure_url);
-    }
+    onChange(result.info.secure_url);
   };
 
   if (!isMounted) {
@@ -43,8 +41,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             key={url}
             className="relative w-[200px] h-[200px] rounded-md overflow-hidden"
           >
-            {/* Tombol Hapus */}
-            <div className="absolute top-2 right-2 z-10">
+            <div className="z-10 absolute top-2 right-2">
               <Button
                 type="button"
                 onClick={() => onRemove(url)}
@@ -54,28 +51,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 <Trash className="h-4 w-4" />
               </Button>
             </div>
-
-            {/* Gambar */}
-            <Image
-              src={url}
-              alt="Uploaded image"
-              fill
-              className="object-cover"
-            />
+            <Image fill className="object-cover" alt="Image" src={url} />
           </div>
         ))}
       </div>
-
-      {/* Widget Upload */}
-      <CldUploadWidget
-        onUpload={onUpload}
-        uploadPreset="tuberta"
-      >
+      <CldUploadWidget onSuccess={onUpload} uploadPreset="tuberta-image">
         {({ open }) => {
           const onClick = () => {
-            if (open && !disabled) {
-              open();
-            }
+            open();
           };
           return (
             <Button
@@ -85,7 +68,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               onClick={onClick}
             >
               <ImagePlus className="h-4 w-4 mr-2" />
-              Upload Image
+              Upload image
             </Button>
           );
         }}
