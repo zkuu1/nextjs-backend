@@ -3,10 +3,19 @@
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
+import { Banner } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { BannerColumn, columns } from "./column";
+import { DataTable } from "@/components/ui/data-table";
 
-export const BannerClient = () => {
+interface BannerClientProps {
+  data: BannerColumn[]
+}
+
+export const BannerClient: React.FC<BannerClientProps> = ({
+  data
+}) => {
 
     const router = useRouter();
     const params = useParams();
@@ -16,7 +25,7 @@ export const BannerClient = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <Heading
-          title="Banner (0)"
+          title={`Banner (${data.length})`}
           description="Atur Banner Untuk Tokomu"
         />
         <Button className="flex items-center gap-2"
@@ -29,6 +38,7 @@ export const BannerClient = () => {
 
       {/* Separator */}
       <Separator />
+      <DataTable data={data} columns={columns} searchKey="label"/>
     </div>
   );
 };
