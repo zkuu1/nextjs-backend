@@ -32,6 +32,7 @@ interface BannerFormProps {
 
 const formSchema = z.object({
   label: z.string().min(1),
+  description: z.string().min(1),
   imageUrl: z.string().min(1),
 });
 
@@ -56,6 +57,7 @@ export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       label: "",
+      description: "",
       imageUrl: "",
     },
   });
@@ -143,6 +145,25 @@ export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
+
+              <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                  <Input
+                      placeholder="Label Banner"
+                      disabled={loading}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
   
             <FormField
               control={form.control}

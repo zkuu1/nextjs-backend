@@ -1,13 +1,15 @@
 "use client";
 
+import { Banner } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { Banner } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { BannerColumn, columns } from "./column";
+import { BannerColumn, columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
+import { ApiList } from "@/components/ui/api-list";
+
 
 interface BannerClientProps {
   data: BannerColumn[]
@@ -16,29 +18,28 @@ interface BannerClientProps {
 export const BannerClient: React.FC<BannerClientProps> = ({
   data
 }) => {
-
-    const router = useRouter();
-    const params = useParams();
+  const router = useRouter();
+  const params = useParams();
 
   return (
-    <div className="space-y-4">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <Heading
-          title={`Banner (${data.length})`}
-          description="Atur Banner Untuk Tokomu"
-        />
-        <Button className="flex items-center gap-2"
-        onClick={()=> router.push(`/${params.storeId}/banners/new`)}
-        >
-          <Plus className="h-4 w-4" />
+    <>
+      <div className="flex items-center justify-between">
+        <Heading title={`Banner (${data.length})`} description="Atur Banner Untuk Toko" />
+        <Button onClick={() => router.push(`/${params.storeId}/banners/new`)}>
+          <Plus className="mr-2 h-4 w-4" />
           Add New
         </Button>
       </div>
-
-      {/* Separator */}
       <Separator />
-      <DataTable data={data} columns={columns} searchKey="label"/>
-    </div>
+      <DataTable data={data} columns={columns} searchKey="label" />
+      <Heading 
+      title="API"
+      description="API untuk Banners"
+      />
+      <Separator />
+
+      {/* Api lIST UI */}
+      <ApiList namaIndikator="banners" idIndikator="bannerId"/>
+    </>
   );
 };

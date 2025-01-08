@@ -1,6 +1,6 @@
 import db from "@/lib/db";
 import { BannerClient } from "./components/client";
-import { BannerColumn } from "./components/column";
+import { BannerColumn } from "./components/columns";
 
 import { format } from 'date-fns';
 
@@ -24,6 +24,8 @@ const BannersPage = async ({
   const formattedBanners : BannerColumn[] = banners.map((item) =>({
     id: item.id,
     label: item.label,
+    description: item.description,
+    imageUrl: item.imageUrl,
     createdAt: format(new Date(item.createdAt), 'MMM/ do / yyyy')
   }))
 

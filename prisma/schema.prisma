@@ -12,6 +12,7 @@ model Store {
   name      String
   userId    String
   banners Banner[] @relation("StoreTobanner")
+  categories Category[] @relation("StoreToCategory")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -20,10 +21,26 @@ model Banner {
   id      String  @id @default(uuid())
   storeId String
   store   Store @relation("StoreTobanner", fields: [storeId], references: [id])
+  Categories Category[]
   label   String
+  description String
   imageUrl  String
   createdAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([storeId])
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  StoreId   String
+  store     Store    @relation("StoreToCategory", fields: [StoreId], references: [id])
+  bannerId String
+  banner    Banner   @relation(fields: [bannerId], references: [id])
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index ([StoreId])
+  @@index ([bannerId])
 }

@@ -25,10 +25,9 @@ export async function POST(req: Request) {
         },
        });
 
+       return NextResponse.json(store);
 
-
-        // Proses lebih lanjut dengan data yang diterima
-        return new NextResponse("Success", { status: 200 });
+       
 
     } catch (error) {
         console.error("[STORES_POST]", error);

@@ -1,138 +1,122 @@
 import db from "@/lib/db";
-import { auth } from "@clerk/nextjs/server"
-import { NextResponse } from "next/server"
+import { auth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-
-// =========== GET BANNER API =============
 export async function GET(
     req: Request,
-    {params}: {params: {bannerId: string}}
-) {
+    { params }: { params: { bannerId: string } }
+  ) {
     try {
-        if (!params.bannerId) {
-            return new NextResponse("Banner id dibutuhhkan", {status:400})
-        }
-
-        const banner = await db.store.findUnique({
-            where: {
-                id: params.bannerId,
-            }
-        })
-
-        return NextResponse.json(banner);
-        
+      if (!params.bannerId) {
+        return new NextResponse("Banner id dibutuhkan", { status: 400 });
+      }
+  
+      const banner = await db.banner.findUnique({
+        where: {
+          id: params.bannerId,
+        },
+      });
+  
+      return NextResponse.json(banner);
     } catch (error) {
-        console.log('[BANNERS_GET]', error)
-        return new NextResponse("Internal Error", {status: 500})
+      console.log("[BANNER_GET]", error);
+      return new NextResponse("Internal error", { status: 500 });
     }
-}
+  }
 
-
-// ========== UBAH DATA =================
 export async function PATCH(
-    req: Request,
-    {params}: {params: {storeId: string, bannerId: string}}
+  req: Request,
+  { params }: { params: { storeId: string; bannerId: string } }
 ) {
-    try {
+  try {
+    const { userId } =  await auth();
+    const body = await req.json();
 
-        const {userId} = await auth()
-        const body = await req.json();
+    const { label, imageUrl, description } = body;
 
-        const {label, imageUrl} = body;
-
-        if(!userId) {
-            return new NextResponse("Tidak Terauntentikasi", {status:401})
-            
-        }
-
-        if (!label) {
-            return new NextResponse("Harus menginput Label", {status:400})
-        }
-
-        if (!imageUrl) {
-            return new NextResponse("Harus menginput ImageUrl", {status:400})
-        }
-
-        if (!params.storeId) {
-            return new NextResponse("Store id dibutuhhkan", {status:400})
-        }
-
-
-        // ========= CEK AGAR TIDAK TERKENA INJEKSI IMAGE ==========
-        const storeByUserId = await db.store.findFirst({
-            where: {
-                id: params.storeId,
-                userId
-            }
-           })
-    
-           if(!storeByUserId) {
-            return new NextResponse("Unauthorized", {status: 403}) 
-        }
-
-        const banner = await db.banner.updateMany({
-            where: {
-                id: params.bannerId,
-            },
-            data: {
-                label,
-                imageUrl
-            }
-        })
-
-        return NextResponse.json(banner);
-        
-    } catch (error) {
-        console.log('BANNER_PACTH]', error)
-        return new NextResponse("Internal Error", {status: 500})
+    if (!userId) {
+      return new NextResponse("Unauthenticated", { status: 401 });
     }
+    if (!label) {
+      return new NextResponse("Harus menginput label", { status: 400 });
+    }
+
+    if (!description) {
+      return new NextResponse("Harus menginput label", { status: 400 });
+    }
+
+    if (!imageUrl) {
+      return new NextResponse("Harus menginput imageUrl", { status: 400 });
+    }
+
+    if (!params.bannerId) {
+      return new NextResponse("Banner id dibutuhkan", { status: 400 });
+    }
+
+    const storeByUserId = await db.store.findFirst({
+      where: {
+        id: params.storeId,
+        userId,
+      },
+    });
+
+    if (!storeByUserId) {
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    const banner = await db.banner.updateMany({
+      where: {
+        id: params.bannerId,
+      },
+      data: {
+        label,
+        imageUrl,
+        description,
+      },
+    });
+
+    return NextResponse.json(banner);
+  } catch (error) {
+    console.log("[BANNER_PATCH]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
 }
 
-// =========== HAPUS / DELETE DATA =============
 export async function DELETE(
-    req: Request,
-    {params}: {params: {storeId: string, bannerId: string}}
+  req: Request,
+  { params }: { params: { storeId: string; bannerId: string } }
 ) {
-    try {
+  try {
+    const { userId } = await auth();
 
-        const {userId} = await auth()
-       
-
-        if(!userId) {
-            return new NextResponse("Tidak Terauntentikasi", {status:401})
-            
-        }
-
-        if (!params.bannerId) {
-            return new NextResponse("Banner id dibutuhhkan", {status:400})
-        }
-
-         // ========= CEK AGAR TIDAK TERKENA INJEKSI IMAGE ==========
-         const storeByUserId = await db.store.findFirst({
-            where: {
-                id: params.storeId,
-                userId
-            }
-           })
-    
-           if(!storeByUserId) {
-            return new NextResponse("Unauthorized", {status: 403}) 
-        }
-
-        const banner = await db.store.deleteMany({
-            where: {
-                id: params.bannerId
-            }
-        })
-
-        
-
-        return NextResponse.json(banner);
-        
-    } catch (error) {
-        console.log('[BANNERS_DELETE]', error)
-        return new NextResponse("Internal Error", {status: 500})
+    if (!userId) {
+      return new NextResponse("Unauthenticated", { status: 401 });
     }
+
+    if (!params.bannerId) {
+      return new NextResponse("Banner id dibutuhkan", { status: 400 });
+    }
+
+    const storeByUserId = await db.store.findFirst({
+      where: {
+        id: params.storeId,
+        userId,
+      },
+    });
+
+    if (!storeByUserId) {
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    const banner = await db.banner.deleteMany({
+      where: {
+        id: params.bannerId,
+      },
+    });
+
+    return NextResponse.json(banner);
+  } catch (error) {
+    console.log("[BANNER_DELETE]", error);
+    return new NextResponse("Internal error", { status: 500 });
+  }
 }
-
-

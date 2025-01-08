@@ -9,7 +9,7 @@ export async function POST(req: Request,
     
         const { userId } = await auth();  // Pastikan untuk menunggu promise auth()
         const body = await req.json();
-        const { label, imageUrl} = body;
+        const { label, imageUrl, description} = body;
         
         // Memeriksa apakah userId ada
         if (!userId) {
@@ -20,6 +20,10 @@ export async function POST(req: Request,
             return new NextResponse("Nama Banner Perlu Diinput" , {status: 400})
         }
 
+        if (!description) {
+            return new NextResponse("Deskripsi Perlu Diinput" , {status: 400})
+        }
+
         if (!imageUrl) {
             return new NextResponse("Image Banner perlu Diinput" , {status: 400})
         }
@@ -27,6 +31,7 @@ export async function POST(req: Request,
        const banner = await db.banner.create({
         data: {
             label,
+            description,
             imageUrl,
             storeId: params.storeId
         },
