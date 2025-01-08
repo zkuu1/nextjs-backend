@@ -7,7 +7,7 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { Banner } from "@prisma/client";
+import { Banner, Category } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,21 +24,30 @@ import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { useOrigin } from "@/hooks/use-origin";
-import ImageUpload from "@/components/ui/image-upload";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-interface BannerFormProps {
-  initialData: Banner | null;
+interface CategoryFormProps {
+  initialData: Category | null;
+  banners: Banner[];
 }
 
 const formSchema = z.object({
-  label: z.string().min(1),
-  description: z.string().min(1),
-  imageUrl: z.string().min(1),
+  name: z.string().min(1),
+  bannerId: z.string().min(1),
 });
 
-type BannerFormValues = z.infer<typeof formSchema>;
+type CategoryFormValues = z.infer<typeof formSchema>;
 
-export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
+export const CategoryForm: React.FC<CategoryFormProps> = ({
+  initialData,
+  banners,
+}) => {
   const params = useParams();
   const router = useRouter();
   const origin = useOrigin();
@@ -46,35 +55,34 @@ export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit Banner" : "Buat Banner";
-  const description = initialData ? "Edit Banner Toko" : "Buat Banner Toko";
+  const title = initialData ? "Edit Category" : "Buat Category";
+  const description = initialData ? "Edit Category Toko" : "Buat Category Toko";
   const toastMessage = initialData
-    ? "Banner berhasil di edit"
-    : "Banner berhasil dibuat";
-  const action = initialData ? "Simpan Banner" : "Buat Banner";
+    ? "Category berhasil di edit"
+    : "Category berhasil dibuat";
+  const action = initialData ? "Simpan Category" : "Buat Category";
 
-  const form = useForm<BannerFormValues>({
+  const form = useForm<CategoryFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      label: "",
-      description: "",
-      imageUrl: "",
+      name: "",
+      bannerId: "",
     },
   });
 
-  const onSubmit = async (data: BannerFormValues) => {
+  const onSubmit = async (data: CategoryFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/${params.storeId}/banners/${params.bannerId}`,
+          `/api/${params.storeId}/categories/${params.categoryId}`,
           data
         );
       } else {
-        await axios.post(`/api/${params.storeId}/banners`, data);
+        await axios.post(`/api/${params.storeId}/categories`, data);
       }
       router.refresh();
-      router.push(`/${params.storeId}/banners`);
+      router.push(`/${params.storeId}/categories`);
       toast.success(toastMessage);
     } catch (error) {
       toast.error("Cek kembali data yang diinput");
@@ -86,10 +94,12 @@ export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/banners/${params.bannerId}`);
+      await axios.delete(
+        `/api/${params.storeId}/categories/${params.categoryId}`
+      );
       router.refresh();
-      router.push(`/${params.storeId}/banners`);
-      toast.success("Banner berhasil dihapus");
+      router.push(`/${params.storeId}/categories`);
+      toast.success("Category berhasil dihapus");
     } catch (error) {
       toast.error("Cek kembali data dan koneksi mu");
     } finally {
@@ -106,10 +116,8 @@ export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
         onConfirm={onDelete}
         loading={loading}
       />
-      <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex-1">
-          <Heading title={title} description={description} />
-        </div>
+      <div className="flex items-center justify-between">
+        <Heading title={title} description={description} />
         {initialData && (
           <Button
             disabled={loading}
@@ -125,18 +133,18 @@ export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full max-w-3xl mx-auto"
+          className="space-y-8 w-full"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
-              name="label"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Label</FormLabel>
+                  <FormLabel>Nama</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Label Banner"
+                      placeholder="Nama Category"
                       disabled={loading}
                       {...field}
                     />
@@ -145,50 +153,44 @@ export const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
-
-              <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                  <Input
-                      placeholder="Description"
-                      disabled={loading}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-  
             <FormField
               control={form.control}
-              name="imageUrl"
+              name="bannerId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image</FormLabel>
+                  <FormLabel>Banner</FormLabel>
                   <FormControl>
-                    <ImageUpload
+                    <Select
                       disabled={loading}
-                      onChange={(url) => field.onChange(url)}
-                      onRemove={() => field.onChange("")}
-                      value={field.value ? [field.value] : []}
-                    />
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            defaultValue={field.value}
+                            placeholder="Pilih Banner"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+
+                        {/* =============== MAPING ================= */}
+                        {banners.map((banner) => (
+                          <SelectItem key={banner.id} value={banner.id}>
+                            {banner.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <Button
-            disabled={loading}
-            type="submit"
-            className="mt-4 w-full"
-          >
+          <Button disabled={loading} type="submit">
             {action}
           </Button>
         </form>

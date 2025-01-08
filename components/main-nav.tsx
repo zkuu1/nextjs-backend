@@ -24,6 +24,18 @@ export function MainNav({
     },
 
     {
+      href: `/${storeId}/categories`,
+      label: `Categories`,
+      active: pathname === `/${storeId}/categories`,
+    },
+
+    {
+      href: `/${storeId}/products`,
+      label: `Menu`,
+      active: pathname === `/${storeId}/products`,
+    },
+
+    {
       href: `/${storeId}/settings`,
       label: `Settings`,
       active: pathname === `/${storeId}/settings`,
