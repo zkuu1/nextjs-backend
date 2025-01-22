@@ -1,62 +1,86 @@
 import db from "@/lib/db";
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
 interface DashboardPageProps {
-  params: { storeId: string };
+  params: { storeName: string }; // Menggunakan nama store
 }
 
 const DashboardPage = async ({ params }: DashboardPageProps) => {
+  const storeName = params.storeName;
+
+  // Query untuk mendapatkan data store berdasarkan nama
   const store = await db.store.findFirst({
     where: {
-      id: params.storeId,
+      name: storeName, // Menggunakan nama store
     },
   });
 
-  const settingsLink = {
-    href: `/${params.storeId}/settings`,
-    label: `Settings`,
-    active: false, 
-  };
+  if (!store) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <p className="text-2xl text-gray-600">Store not found</p>
+      </div>
+    );
+  }
 
-  const bannerLink = {
-    href: `/${params.storeId}/banners`,
-    label: `Manage Catering`,
-    active: false, 
-  };
+  // Query untuk menghitung jumlah data terkait store
+  const [totalBanners, totalCategories, totalMenus] = await Promise.all([
+    db.banner.count({
+      where: { storeId: store.id }, // Gunakan ID store dari hasil query sebelumnya
+    }),
+    db.category.count({
+      where: { storeId: store.id },
+    }),
+    db.product.count({
+      where: { storeId: store.id },
+    }),
+  ]);
+
+
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="w-full max-w-4xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start py-10">
+      <div className="w-full max-w-6xl mx-auto px-4">
         <Card className="shadow-lg rounded-lg overflow-hidden">
-          <CardHeader className="bg-orange-500 text-white py-4 px-6">
-            <CardTitle className="text-2xl font-bold">Dashboard</CardTitle>
+          <CardHeader className="bg-orange-500 text-white py-6 px-8">
+            <CardTitle className="text-3xl font-bold">Dashboard Admin</CardTitle>
           </CardHeader>
-          <CardContent className="p-6 bg-white">
-            <div className="text-gray-800 text-lg mb-4">
+          <CardContent className="p-8 bg-white">
+            <div className="text-gray-800 text-lg mb-6">
               <p>
-                <span className="font-semibold">Kamu Berada di Catering Yaitu:</span> {" "}
+                <span className="font-semibold">Kamu Berada Di Catering: </span>{" "}
                 <span className="text-orange-600 font-medium">
-                  {store?.name || "No Store Found"}
+                  {store.name || "No Store Found"}
                 </span>
               </p>
             </div>
-            <div className="flex justify-end gap-4">
-              <Link href={settingsLink.href} legacyBehavior>
-                <a
-                  className={`px-4 py-2 rounded-md ${settingsLink.active ? "bg-orange-600 text-white" : "bg-gray-300 text-gray-700"}`}
-                >
-                  {settingsLink.label}
-                </a>
-              </Link>
-              <Link href={bannerLink.href} legacyBehavior>
-                <a
-                  className={`px-4 py-2 rounded-md ${bannerLink.active ? "bg-orange-600 text-white" : "bg-orange-500 text-white"}`}
-                >
-                  {bannerLink.label}
-                </a>
-              </Link>
+            <div className="grid grid-cols-2 gap-6 mb-8">
+              {/* Statistik */}
+              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h4 className="text-xl font-bold text-gray-700">Total Banner</h4>
+                <p className="text-2xl font-semibold text-orange-500">
+                  {totalBanners}
+                </p>
+              </div>
+              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h4 className="text-xl font-bold text-gray-700">Total Categories</h4>
+                <p className="text-2xl font-semibold text-orange-500">
+                  {totalCategories}
+                </p>
+              </div>
+              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h4 className="text-xl font-bold text-gray-700">Total Menu</h4>
+                <p className="text-2xl font-semibold text-orange-500">
+                  {totalMenus}
+                </p>
+              </div>
+              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+                <h4 className="text-xl font-bold text-gray-700">Total All</h4>
+                <p className="text-2xl font-semibold text-orange-500">
+                  {totalBanners + totalCategories + totalMenus}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
