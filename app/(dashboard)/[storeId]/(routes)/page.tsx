@@ -15,49 +15,52 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start py-10">
-      <div className="w-full max-w-6xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start py-6 px-4 sm:px-8">
+      <div className="w-full max-w-6xl mx-auto">
         <Card className="shadow-lg rounded-lg overflow-hidden">
-          <CardHeader className="bg-orange-500 text-white py-6 px-8">
-            <CardTitle className="text-3xl font-bold">Dashboard Admin</CardTitle>
+          <CardHeader className="bg-orange-500 text-white py-6 px-6 sm:px-8">
+            <CardTitle className="text-2xl sm:text-3xl font-bold">Dashboard Admin</CardTitle>
           </CardHeader>
-          <CardContent className="p-8 bg-white">
-            <div className="text-gray-800 text-lg mb-6">
+          <CardContent className="p-6 sm:p-8 bg-white">
+            <div className="text-gray-800 text-base sm:text-lg mb-6">
               <p>
-                <span className="font-semibold">Nama Catering </span>{" "}
+                <span className="font-semibold">Kamu Berada Di Catering: </span>{" "}
                 <span className="text-orange-600 font-medium">
                   {store?.name || "No Store Found"}
                 </span>
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-6 mb-8">
-              {/* Statistik */}
-              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-                <h4 className="text-xl font-bold text-gray-700">Banner</h4>
-                <p className="text-2xl font-semibold text-orange-500">Kelola banner</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Banner */}
+              <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md">
+                <h4 className="text-lg sm:text-xl font-bold text-gray-700">Banner</h4>
+                <p className="text-base sm:text-lg font-semibold text-orange-500">Kelola banner</p>
                 <Link href={`/${params.storeId}/banners`} passHref>
-                  <Button className="mt-4 bg-orange-500 text-white">Kelola Banner</Button>
+                  <Button className="mt-4 w-full bg-orange-500 text-white">Kelola Banner</Button>
                 </Link>
               </div>
-              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-                <h4 className="text-xl font-bold text-gray-700">Categories</h4>
-                <p className="text-2xl font-semibold text-orange-500">Kelola kategori</p>
+              {/* Categories */}
+              <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md">
+                <h4 className="text-lg sm:text-xl font-bold text-gray-700">Categories</h4>
+                <p className="text-base sm:text-lg font-semibold text-orange-500">Kelola kategori</p>
                 <Link href={`/${params.storeId}/categories`} passHref>
-                  <Button className="mt-4 bg-orange-500 text-white">Kelola Kategori</Button>
+                  <Button className="mt-4 w-full bg-orange-500 text-white">Kelola Kategori</Button>
                 </Link>
               </div>
-              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-                <h4 className="text-xl font-bold text-gray-700">Menu</h4>
-                <p className="text-2xl font-semibold text-orange-500">Kelola menu</p>
+              {/* Menu */}
+              <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md">
+                <h4 className="text-lg sm:text-xl font-bold text-gray-700">Menu</h4>
+                <p className="text-base sm:text-lg font-semibold text-orange-500">Kelola menu</p>
                 <Link href={`/${params.storeId}/products`} passHref>
-                  <Button className="mt-4 bg-orange-500 text-white">Kelola Menu</Button>
+                  <Button className="mt-4 w-full bg-orange-500 text-white">Kelola Menu</Button>
                 </Link>
               </div>
-              <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-                <h4 className="text-xl font-bold text-gray-700">Public API</h4>
-                <p className="text-2xl font-semibold text-orange-500">Pengaturan API</p>
+              {/* Public API */}
+              <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md">
+                <h4 className="text-lg sm:text-xl font-bold text-gray-700">Public API</h4>
+                <p className="text-base sm:text-lg font-semibold text-orange-500">Pengaturan API</p>
                 <Link href={`/${params.storeId}/settings`} passHref>
-                  <Button className="mt-4 bg-orange-500 text-white">Pengaturan API</Button>
+                  <Button className="mt-4 w-full bg-orange-500 text-white">Pengaturan API</Button>
                 </Link>
               </div>
             </div>
