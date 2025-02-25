@@ -8,7 +8,7 @@ const nextConfig = {
       {
         source: "/api/:path*", // Matching all API routes
         headers: [
-          { key: "Access-Control-Allow-Origin", value: "*" }, // Ganti * dengan domain spesifik jika perlu
+          { key: "Access-Control-Allow-Origin", value: "*" },
           { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
           {
             key: "Access-Control-Allow-Headers",
