@@ -28,6 +28,7 @@ const CategoryPage = async ({
   const formattedCategories : CategoryColumn[] = categories.map((item) =>({
     id: item.id,
     name: item.name,
+    imageUrl: item.banner.imageUrl,
     bannerLabel: item.banner.label,
      createdAt: format(new Date(item.createdAt), 'MMM/ do / yyyy')
   }))

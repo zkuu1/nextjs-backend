@@ -113,7 +113,7 @@ export function MainNav({
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 w-full md:hidden bg-white dark:bg-gray-800 shadow-lg z-50 animate-in slide-in-from-top-2">
+        <div className="absolute top-full left-0 md:hidden bg-white dark:bg-gray-800 shadow-lg z-50 animate-in slide-in-from-top-2 w-fit rounded-md">
           <ul className="flex flex-col py-2">
             {routes.map((route) => (
               <li key={route.href}>
@@ -121,7 +121,7 @@ export function MainNav({
                   href={route.href}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "block px-4 py-3 text-sm font-medium transition-colors",
+                    "block px-4 py-3 text-sm font-medium transition-colors rounded-md",
                     route.active
                       ? "text-black dark:text-white bg-gray-100 dark:bg-gray-700"
                       : "text-muted-foreground hover:bg-gray-50 dark:hover:bg-gray-700"

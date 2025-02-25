@@ -17,20 +17,24 @@ const ProductPage = async ({
       storeId: params.storeId
     },
     include: {
-      category: true
+      category: true,
+      images: true, // Ambil relasi images
     },
-  })
+  });
+  
 
-  const formattedProducts : ProductColumn[] = products.map((item) =>({
+  const formattedProducts: ProductColumn[] = products.map((item) => ({
     id: item.id,
     name: item.name,
     description: item.description,
+    imageUrl: item.images.length > 0 ? item.images[0].url : "/images/default.jpg", // Ambil gambar pertama jika ada
     isFeatured: item.isFeatured,
     isArchived: item.isArchived,
     price: formatter.format(item.price.toNumber()),
     category: item.category.name,
-    createdAt: format(new Date(item.createdAt), 'MMM/ do / yyyy')
-  }))
+    createdAt: format(new Date(item.createdAt), "MMM do, yyyy"),
+  }));
+  
 
   return (
     <div className="flex flex-col space-y-4 p-8">

@@ -30,11 +30,12 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
                 </span>
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Grid 2x2 pada Mobile */}
+            <div className="grid grid-cols-2 gap-4 sm:gap-6">
               {/* Banner */}
               <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md">
                 <h4 className="text-lg sm:text-xl font-bold text-gray-700">Banner</h4>
-                <p className="text-base sm:text-lg font-semibold text-orange-500">Kelola banner</p>
+              
                 <Link href={`/${params.storeId}/banners`} passHref>
                   <Button className="mt-4 w-full bg-orange-500 text-white">Kelola Banner</Button>
                 </Link>
@@ -42,7 +43,7 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
               {/* Categories */}
               <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md">
                 <h4 className="text-lg sm:text-xl font-bold text-gray-700">Categories</h4>
-                <p className="text-base sm:text-lg font-semibold text-orange-500">Kelola kategori</p>
+               
                 <Link href={`/${params.storeId}/categories`} passHref>
                   <Button className="mt-4 w-full bg-orange-500 text-white">Kelola Kategori</Button>
                 </Link>
@@ -50,7 +51,7 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
               {/* Menu */}
               <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md">
                 <h4 className="text-lg sm:text-xl font-bold text-gray-700">Menu</h4>
-                <p className="text-base sm:text-lg font-semibold text-orange-500">Kelola menu</p>
+                
                 <Link href={`/${params.storeId}/products`} passHref>
                   <Button className="mt-4 w-full bg-orange-500 text-white">Kelola Menu</Button>
                 </Link>
@@ -58,7 +59,7 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
               {/* Public API */}
               <div className="bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md">
                 <h4 className="text-lg sm:text-xl font-bold text-gray-700">Public API</h4>
-                <p className="text-base sm:text-lg font-semibold text-orange-500">Pengaturan API</p>
+                
                 <Link href={`/${params.storeId}/settings`} passHref>
                   <Button className="mt-4 w-full bg-orange-500 text-white">Pengaturan API</Button>
                 </Link>
@@ -69,6 +70,7 @@ const DashboardPage = async ({ params }: DashboardPageProps) => {
       </div>
     </div>
   );
+  
 };
 
 export default DashboardPage;

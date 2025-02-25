@@ -44,15 +44,21 @@ interface ProductFormProps {
   categories: Category[];
 }
 
-const formSchema = z.object({
-  name: z.string().min(1),
-  images: z.object({ url: z.string() }).array(),
-  price: z.coerce.number().min(1),
-  description: z.string().optional(),
-  categoryId: z.string().min(1),
-  isFeatured: z.boolean().default(false).optional(),
-  isArchived: z.boolean().default(false).optional(),
-});
+const formSchema = z
+  .object({
+    name: z.string().min(1),
+    images: z.object({ url: z.string() }).array(),
+    price: z.coerce.number().min(1),
+    description: z.string().optional(),
+    categoryId: z.string().min(1),
+    isFeatured: z.boolean(),
+    isArchived: z.boolean(),
+  })
+  .refine((data) => !(data.isFeatured && data.isArchived), {
+    message: "Hanya bisa memilih salah satu: Featured atau Archived",
+    path: ["isFeatured"],
+  });
+
 
 type ProductFormValues = z.infer<typeof formSchema>;
 
@@ -273,42 +279,52 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               )}
             />
             <FormField
-              control={form.control}
-              name="isFeatured"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Featured</FormLabel>
-                    <FormDescription>
-                      Produk ini akan muncul di Home Page
-                    </FormDescription>
-                  </div>
-                </FormItem>
+            control={form.control}
+            name="isFeatured"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(checked) => {
+                      form.setValue("isFeatured", !!checked);
+                      if (checked) {
+                        form.setValue("isArchived", false);
+                      }
+                    }}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Featured</FormLabel>
+                  <FormDescription>
+                    Produk ini akan muncul di Home Page
+                  </FormDescription>
+                </div>
+              </FormItem>
               )}
             />
             <FormField
-              control={form.control}
-              name="isArchived"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Archived</FormLabel>
-                    <FormDescription>
-                      Produk ini akan disembunyikan dari toko
-                    </FormDescription>
-                  </div>
+               control={form.control}
+               name="isArchived"
+               render={({ field }) => (
+                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                   <FormControl>
+                     <Checkbox
+                       checked={field.value}
+                       onCheckedChange={(checked) => {
+                         form.setValue("isArchived", !!checked);
+                         if (checked) {
+                           form.setValue("isFeatured", false);
+                         }
+                       }}
+                     />
+                   </FormControl>
+                   <div className="space-y-1 leading-none">
+                     <FormLabel>Archived</FormLabel>
+                     <FormDescription>
+                       Produk ini akan disembunyikan dari toko
+                     </FormDescription>
+                   </div>
                 </FormItem>
               )}
             />
